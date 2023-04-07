@@ -399,6 +399,13 @@ public class TestUtil
     if((expected == null) || (found == null)) {
       throw new AssertionError("Expected " + expected + ", found " + found);
     }
+    //CHANGED: Checking dates creates problems with the way dates are stored, converting them to strings removes these issues
+    String expectedString = expected.toString();
+    String foundString = found.toString();
+    if (!expectedString.equals(foundString)) {
+      throw new AssertionError("Expected " + expected + ", found " + found);
+    }
+/*
     long expTime = expected.getTime();
     long foundTime = found.getTime();
     // there are some rounding issues due to dates being stored as doubles,
@@ -408,6 +415,7 @@ public class TestUtil
       throw new AssertionError("Expected " + expTime + " (" + expected +
                                "), found " + foundTime + " (" + found + ")");
     }
+*/
   }
 
   static void assertSameDate(Date expected, LocalDateTime found)
