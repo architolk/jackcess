@@ -996,7 +996,9 @@ public class DatabaseImpl implements Database, DateTimeContext
     _systemCatalog = loadTable(TABLE_SYSTEM_CATALOG, PAGE_SYSTEM_CATALOG,
                                SYSTEM_OBJECT_FLAGS, TYPE_TABLE);
 
-    try {
+    //CHANGED: Use FallbackTableFinder because the DefaultTableFinder has a bug
+    //         with large numbers of tables and V1997 [Version 3] database
+    /*try {
       _tableFinder = new DefaultTableFinder(
           _systemCatalog.newCursor()
             .setIndexByColumnNames(CAT_COL_PARENT_ID, CAT_COL_NAME)
@@ -1007,13 +1009,13 @@ public class DatabaseImpl implements Database, DateTimeContext
         LOG.debug(withErrorContext(
                 "Could not find expected index on table " +
                 _systemCatalog.getName()));
-      }
+      }*/
       // use table scan instead
       _tableFinder = new FallbackTableFinder(
           _systemCatalog.newCursor()
             .setColumnMatcher(CaseInsensitiveColumnMatcher.INSTANCE)
             .toCursor());
-    }
+    //}
 
     _tableParentId = _tableFinder.findObjectId(DB_PARENT_ID,
                                                SYSTEM_OBJECT_NAME_TABLES);
